@@ -7,7 +7,7 @@
 <meta name="description" content="Abir Outaleb, clinical psychologist at Cabinet Al Wissal. CBT (TCC), ABA, parent guidance and psychological assessment.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500;700&family=Noto+Sans+Arabic:wght@300;400;700&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <style>
@@ -227,6 +227,26 @@ p{max-width:60ch}
   .note{left:0}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important}}
+
+/* Language switcher */
+.brand{margin-inline-end:auto}
+.lang{position:relative;margin-inline-start:clamp(18px,3vw,40px)}
+.lang-btn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;background:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;font:inherit;font-size:.85rem;font-weight:700;letter-spacing:.04em;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .3s,background .3s}
+.lang-btn:hover,.lang-btn[aria-expanded="true"]{border-color:var(--teal-deep);background:rgba(244,241,234,.06)}
+.lang-btn svg{width:18px;height:18px;flex:none}
+.lang-menu{position:absolute;inset-inline-end:0;top:calc(100% + 10px);min-width:160px;margin:0;padding:6px;list-style:none;background:rgba(14,14,15,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .2s,transform .2s,visibility .2s}
+.lang-menu.is-open{opacity:1;visibility:visible;transform:none}
+.lang-menu button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:none;border:0;border-radius:10px;color:var(--ink);font:inherit;font-size:.95rem;text-align:start;cursor:pointer}
+.lang-menu button:hover,.lang-menu button:focus-visible{background:rgba(244,241,234,.08);outline:none}
+.lang-menu button[aria-current="true"]{color:var(--teal-deep)}
+.lang-menu button[aria-current="true"]::after{content:"\2713"}
+@media (max-width:860px){.nav-toggle{margin-inline-start:0}.lang{margin-inline-start:10px}}
+/* Arabic */
+:lang(ar) body,:lang(ar) input,:lang(ar) select,:lang(ar) textarea,:lang(ar) button{font-family:"Noto Sans Arabic",Lato,system-ui,sans-serif}
+:lang(ar) h1,:lang(ar) h2,:lang(ar) h3,:lang(ar) .brand,:lang(ar) .scroll-text,:lang(ar) .quote{font-family:"Noto Naskh Arabic","Playfair Display",Georgia,serif;letter-spacing:0;line-height:1.4}
+[dir="rtl"] *{letter-spacing:0!important}
+[dir="rtl"] .tgh-stage,[dir="rtl"] .hero-art,[dir="rtl"] .arch{direction:ltr}
+[dir="rtl"] .note{left:auto;right:0}
 </style>
 </head>
 <body>
@@ -242,6 +262,14 @@ p{max-width:60ch}
     <a href="#services" data-nav="services">Services</a>
     <a href="#contact" data-nav="contact">Contact</a>
   </nav>
+  <div class="lang" id="lang">
+    <button class="lang-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="lang-menu" aria-label="Change language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.8 2.7 4.2 5.9 4.2 9.5s-1.4 6.8-4.2 9.5c-2.8-2.7-4.2-5.9-4.2-9.5S9.2 5.2 12 2.5Z"/></svg><span id="lang-code">EN</span></button>
+    <ul class="lang-menu" id="lang-menu">
+      <li><button type="button" data-lang="en" lang="en">English</button></li>
+      <li><button type="button" data-lang="fr" lang="fr">Français</button></li>
+      <li><button type="button" data-lang="ar" lang="ar" dir="rtl">العربية</button></li>
+    </ul>
+  </div>
   <div class="progress" aria-hidden="true"></div>
 </header>
 
@@ -497,16 +525,88 @@ p{max-width:60ch}
 
 <script>
 (() => {
+  const T = {"Menu": ["Menu", "القائمة"], "Home": ["Accueil", "الرئيسية"], "About": ["À propos", "من أنا"], "Services": ["Services", "الخدمات"], "Contact": ["Contact", "اتصال"], "Find steadier ground, one honest conversation at a time.": ["Retrouvez un terrain plus stable, une conversation sincère à la fois.", "استعيد توازنك أكثر، بمحادثة صادقة واحدة في كل مرة."], "Abir Outaleb is a clinical psychologist offering evidence-based care for adults, young people and families, in a calm and confidential setting at Cabinet Al Wissal.": ["Abir Outaleb est psychologue clinicienne et propose des soins fondés sur des preuves aux adultes, aux jeunes et aux familles, dans un cadre calme et confidentiel au Cabinet Al Wissal.", "Abir Outaleb أخصائية نفسية إكلينيكية، تقدّم رعاية قائمة على الأدلة العلمية للراشدين والشباب والأسر، في أجواء هادئة وسرّية داخل Cabinet Al Wissal."], "Book a consultation": ["Prendre rendez-vous", "احجز استشارة"], "Explore services": ["Découvrir les services", "اكتشف الخدمات"], "Progress is often quiet. We notice it together.": ["Le progrès est souvent discret. Nous le remarquons ensemble.", "التقدّم غالباً هادئ، ونلاحظه معاً."], "Small shifts, carried into everyday life.": ["De petits changements, portés dans la vie quotidienne.", "تغييرات صغيرة، تنتقل إلى الحياة اليومية."], "Each session builds on the last, so progress can settle into the moments that matter most.": ["Chaque séance s'appuie sur la précédente, pour que le progrès s'installe dans les moments qui comptent le plus.", "تبني كل جلسة على ما قبلها، ليستقر التقدّم في اللحظات الأهم."], "Evidence-based care": ["Des soins fondés sur des preuves", "رعاية قائمة على الأدلة العلمية"], "Methods backed by research, shaped around your history, your goals and your pace.": ["Des méthodes validées par la recherche, adaptées à votre histoire, vos objectifs et votre rythme.", "أساليب مدعومة بالأبحاث، ومصمَّمة وفق تاريخك وأهدافك ووتيرتك."], "A private, unhurried space": ["Un espace privé, sans précipitation", "مساحة خاصة وبلا استعجال"], "You decide what to share and when. Every session is a place to be heard without judgment.": ["Vous décidez de ce que vous partagez et quand. Chaque séance est un lieu où l'on vous écoute sans jugement.", "أنت تقرّر ما تشاركه ومتى. كل جلسة هي مكان تُسمَع فيه دون أي حكم."], "Support for the whole family": ["Un soutien pour toute la famille", "دعم للأسرة كلها"], "Children, parents and partners can be supported together, with every voice respected.": ["Enfants, parents et partenaires peuvent être accompagnés ensemble, chaque voix étant respectée.", "يمكن مرافقة الأطفال والوالدين والشركاء معاً، مع احترام صوت كل فرد."], "Care, one step at a time.": ["Des soins, pas à pas.", "رعاية، خطوة بخطوة."], "Care, one step at a time": ["Des soins, pas à pas", "رعاية، خطوة بخطوة"], "TCC": ["TCC", "العلاج المعرفي السلوكي"], "ABA": ["ABA", "تحليل السلوك التطبيقي"], "Parent guidance": ["Guidance parentale", "إرشاد الوالدين"], "Assessment": ["Évaluation", "التقييم"], "Ready when you are.": ["Prête quand vous l'êtes.", "حاضرة متى كنتَ مستعداً."], "A first conversation is a chance to ask questions and see whether we feel like a good fit.": ["Une première conversation permet de poser vos questions et de voir si nous nous entendons bien.", "المحادثة الأولى فرصة لطرح الأسئلة ومعرفة ما إذا كنا مناسبَين لبعضنا."], "I’m Abir Outaleb, a clinical psychologist.": ["Je suis Abir Outaleb, psychologue clinicienne.", "أنا Abir Outaleb، أخصائية نفسية إكلينيكية."], "I work with adults facing anxiety, low mood and life transitions, with young people, and with families navigating developmental and behavioral needs.": ["Je travaille avec des adultes confrontés à l'anxiété, à une humeur dépressive ou à des transitions de vie, avec des jeunes, et avec des familles face à des besoins développementaux et comportementaux.", "أعمل مع راشدين يعانون من القلق أو انخفاض المزاج أو تحوّلات الحياة، ومع الشباب، ومع أسر لديها احتياجات نمائية وسلوكية."], "Clinical psychologist, Cabinet Al Wissal": ["Psychologue clinicienne, Cabinet Al Wissal", "أخصائية نفسية إكلينيكية، Cabinet Al Wissal"], "Trained in cognitive behavioral therapy (TCC)": ["Formée à la thérapie cognitivo-comportementale (TCC)", "متدرّبة على العلاج المعرفي السلوكي (TCC)"], "Training in Applied Behavior Analysis (ABA)": ["Formation en analyse appliquée du comportement (ABA)", "تدريب في تحليل السلوك التطبيقي (ABA)"], "Psychological assessment for children and adults": ["Évaluation psychologique pour enfants et adultes", "تقييم نفسي للأطفال والراشدين"], "Change rarely arrives all at once. It arrives in small, repeated moments of courage.": ["Le changement arrive rarement d'un coup. Il vient par de petits moments de courage, répétés.", "نادراً ما يأتي التغيير دفعة واحدة. إنه يأتي في لحظات شجاعة صغيرة ومتكررة."], "Care that grows with you.": ["Des soins qui grandissent avec vous.", "رعاية تنمو معك."], "Warm, structured and unhurried, from the first conversation to the last.": ["Chaleureux, structuré et sans précipitation, de la première conversation à la dernière.", "دافئة ومنظَّمة وبلا استعجال، من المحادثة الأولى حتى الأخيرة."], "Therapies, chosen with you.": ["Des thérapies, choisies avec vous.", "علاجات، تُختار معك."], "Every plan starts with understanding what you need. These are the approaches I use most often.": ["Chaque plan commence par comprendre ce dont vous avez besoin. Voici les approches que j'utilise le plus souvent.", "تبدأ كل خطة بفهم ما تحتاجه. هذه هي المقاربات التي أستخدمها أكثر."], "Cognitive behavioral therapy (TCC)": ["Thérapie cognitivo-comportementale (TCC)", "العلاج المعرفي السلوكي (TCC)"], "For anxiety, low mood, panic, obsessive thoughts and everyday stress. Structured, practical and focused on change you can feel.": ["Pour l'anxiété, l'humeur dépressive, la panique, les pensées obsédantes et le stress du quotidien. Structurée, pratique et centrée sur un changement que vous ressentez.", "للقلق وانخفاض المزاج ونوبات الهلع والأفكار الوسواسية وضغوط الحياة اليومية. منظَّمة وعملية، وتركّز على تغيير تشعر به فعلاً."], "We look at the thoughts and habits that keep you stuck, test them against real life and build new responses one step at a time. You leave each session with something to try.": ["Nous examinons les pensées et habitudes qui vous bloquent, les confrontons à la réalité et construisons de nouvelles réponses pas à pas. Vous repartez de chaque séance avec quelque chose à essayer.", "ننظر في الأفكار والعادات التي تُبقيك عالقاً، ونختبرها في الواقع، ونبني ردود فعل جديدة خطوة بخطوة. تغادر كل جلسة ومعك شيء تجرّبه."], "Applied Behavior Analysis (ABA)": ["Analyse appliquée du comportement (ABA)", "تحليل السلوك التطبيقي (ABA)"], "Individual programs for children and adolescents on the autism spectrum or with developmental needs.": ["Des programmes individuels pour les enfants et adolescents avec autisme ou ayant des besoins développementaux.", "برامج فردية للأطفال والمراهقين من ذوي طيف التوحد أو الاحتياجات النمائية."], "We begin with a careful assessment, then build a plan around your child’s strengths. Learning happens through play and daily routines, and parents are involved at every stage.": ["Nous commençons par une évaluation minutieuse, puis bâtissons un plan autour des forces de votre enfant. L'apprentissage passe par le jeu et les routines quotidiennes, et les parents sont impliqués à chaque étape.", "نبدأ بتقييم دقيق، ثم نبني خطة حول نقاط قوة طفلك. يحدث التعلّم عبر اللعب والروتين اليومي، ويشارك الوالدان في كل مرحلة."], "Support for families facing challenges with behavior, sleep, school, routines or big emotions.": ["Un soutien pour les familles confrontées à des difficultés de comportement, de sommeil, d'école, de routines ou d'émotions intenses.", "دعم للأسر التي تواجه صعوبات في السلوك أو النوم أو الدراسة أو الروتين أو المشاعر القوية."], "Clear, practical strategies shared at a pace that fits your family, so you feel more confident and less alone in the day-to-day.": ["Des stratégies claires et pratiques, partagées à un rythme qui convient à votre famille, pour vous sentir plus confiant et moins seul au quotidien.", "استراتيجيات واضحة وعملية تُقدَّم بوتيرة تناسب أسرتك، لتشعر بثقة أكبر ووحدة أقل في الحياة اليومية."], "Psychological assessment": ["Évaluation psychologique", "التقييم النفسي"], "Thorough evaluations for children and adults, with feedback explained in plain language.": ["Des évaluations approfondies pour enfants et adultes, avec des résultats expliqués en langage clair.", "تقييمات شاملة للأطفال والراشدين، مع شرح النتائج بلغة بسيطة."], "Structured interviews and standardized tools, followed by a clear written report and a conversation about what happens next.": ["Entretiens structurés et outils standardisés, suivis d'un rapport écrit clair et d'un échange sur la suite.", "مقابلات منظَّمة وأدوات معيارية، يتبعها تقرير مكتوب واضح ونقاش حول الخطوات التالية."], "Read more": ["Lire la suite", "اقرأ المزيد"], "Show less": ["Réduire", "إظهار أقل"], "A plan that fits your life.": ["Un plan adapté à votre vie.", "خطة تناسب حياتك."], "Every approach is adjusted to your pace, your family and your goals.": ["Chaque approche est ajustée à votre rythme, votre famille et vos objectifs.", "تُكيَّف كل مقاربة مع وتيرتك وأسرتك وأهدافك."], "How we begin": ["Comment nous commençons", "كيف نبدأ"], "Reach out": ["Prenez contact", "تواصل معي"], "Send a message or choose a time that suits you.": ["Envoyez un message ou choisissez un moment qui vous convient.", "أرسل رسالة أو اختر وقتاً يناسبك."], "Consultation": ["Consultation", "الاستشارة"], "We talk through what is happening, what you hope for and whether we are a good match.": ["Nous parlons de ce qui se passe, de ce que vous espérez et de savoir si nous nous convenons.", "نتحدث عمّا يحدث وعمّا تأمله وهل نحن مناسبان لبعضنا."], "A plan together": ["Un plan ensemble", "خطة نضعها معاً"], "We agree on an approach, a rhythm and a way to notice progress.": ["Nous convenons d'une approche, d'un rythme et d'une façon de repérer les progrès.", "نتفق على مقاربة ووتيرة وطريقة لملاحظة التقدّم."], "Let’s take the first step.": ["Faisons le premier pas.", "لنخطُ الخطوة الأولى."], "Send a short message and I will reply to arrange a first consultation. Your details stay between you and the practice.": ["Envoyez un court message et je vous répondrai pour fixer une première consultation. Vos informations restent entre vous et le cabinet.", "أرسل رسالة قصيرة وسأردّ عليك لترتيب أول استشارة. تبقى بياناتك بينك وبين العيادة."], "Call now": ["Appeler", "اتصل الآن"], "WhatsApp": ["WhatsApp", "واتساب"], "Phone": ["Téléphone", "الهاتف"], "Email": ["E-mail", "البريد الإلكتروني"], "Practice": ["Cabinet", "العيادة"], "Cabinet Al Wissal, Morocco": ["Cabinet Al Wissal, Maroc", "Cabinet Al Wissal، المغرب"], "Hours": ["Horaires", "الأوقات"], "Appointments by arrangement": ["Sur rendez-vous", "بموعد مسبق"], "Full name": ["Nom complet", "الاسم الكامل"], "Phone (optional)": ["Téléphone (facultatif)", "الهاتف (اختياري)"], "Service of interest": ["Service souhaité", "الخدمة المطلوبة"], "Not sure yet": ["Pas encore sûr(e)", "لست متأكداً بعد"], "How can I help?": ["Comment puis-je vous aider ?", "كيف يمكنني مساعدتك؟"], "I agree to be contacted about a consultation.": ["J'accepte d'être contacté(e) au sujet d'une consultation.", "أوافق على أن يتم التواصل معي بخصوص استشارة."], "Send message": ["Envoyer le message", "إرسال الرسالة"], "Abir Outaleb, Clinical Psychologist. Cabinet Al Wissal.": ["Abir Outaleb, psychologue clinicienne. Cabinet Al Wissal.", "Abir Outaleb، أخصائية نفسية إكلينيكية. Cabinet Al Wissal."], "Please enter your name.": ["Veuillez saisir votre nom.", "يرجى إدخال اسمك."], "Please enter a valid email address.": ["Veuillez saisir une adresse e-mail valide.", "يرجى إدخال بريد إلكتروني صحيح."], "Please write a short message.": ["Veuillez écrire un court message.", "يرجى كتابة رسالة قصيرة."], "Please confirm you agree to be contacted.": ["Veuillez confirmer que vous acceptez d'être contacté(e).", "يرجى تأكيد موافقتك على التواصل معك."], "Chat on WhatsApp": ["Discuter sur WhatsApp", "تحدّث عبر واتساب"], "Call 07 12 33 38 03": ["Appeler le 07 12 33 38 03", "اتصل بالرقم 07 12 33 38 03"], "Abir Outaleb, Cabinet Al Wissal": ["Abir Outaleb, Cabinet Al Wissal", "Abir Outaleb، Cabinet Al Wissal"], "Change language": ["Changer de langue", "تغيير اللغة"], "Please check the highlighted fields.": ["Veuillez vérifier les champs en surbrillance.", "يرجى مراجعة الحقول المحدّدة."], "Opening WhatsApp… just press send there to deliver your message.": ["Ouverture de WhatsApp… appuyez simplement sur envoyer pour transmettre votre message.", "جارٍ فتح واتساب… فقط اضغط إرسال هناك لإيصال رسالتك."], "Abir Outaleb | Clinical Psychologist": ["Abir Outaleb | Psychologue clinicienne", "Abir Outaleb | أخصائية نفسية إكلينيكية"], "About | Abir Outaleb": ["À propos | Abir Outaleb", "من أنا | Abir Outaleb"], "Services | Abir Outaleb": ["Services | Abir Outaleb", "الخدمات | Abir Outaleb"], "Contact | Abir Outaleb": ["Contact | Abir Outaleb", "اتصال | Abir Outaleb"], "Hello, I would like to book a consultation.": ["Bonjour, je souhaiterais prendre rendez-vous pour une consultation.", "مرحباً، أودّ حجز استشارة."], "Hello, my name is": ["Bonjour, je m'appelle", "مرحباً، اسمي"], "Email:": ["E-mail :", "البريد الإلكتروني:"], "Phone:": ["Téléphone :", "الهاتف:"], "Service:": ["Service :", "الخدمة:"], "My work rests on a simple belief: people think and heal best when they feel truly heard. I bring structured, evidence-based methods into a warm and unhurried room, so therapy feels like a shared project rather than a verdict.": ["Mon travail repose sur une conviction simple : on pense et on guérit mieux lorsqu'on se sent vraiment écouté. J'apporte des méthodes structurées et fondées sur des preuves dans une pièce chaleureuse et sans précipitation, pour que la thérapie soit un projet partagé plutôt qu'un verdict.", "يقوم عملي على قناعة بسيطة: يفكّر الناس ويتعافون بشكل أفضل حين يشعرون أنهم مسموعون حقاً. أقدّم أساليب منظَّمة قائمة على الأدلة في أجواء دافئة وبلا استعجال، ليكون العلاج مشروعاً مشتركاً لا حكماً عليك."]};
+  const LANGS = ['en', 'fr', 'ar'];
+  let lang = 'en';
+  try {
+    const q = new URLSearchParams(location.search).get('lang');
+    const saved = localStorage.getItem('lang');
+    lang = LANGS.includes(q) ? q : LANGS.includes(saved) ? saved : '';
+  } catch (e) { lang = ''; }
+  if (!lang) {
+    const n = (navigator.language || 'en').slice(0, 2).toLowerCase();
+    lang = LANGS.includes(n) ? n : 'en';
+  }
+  const idx = { en: 0, fr: 1, ar: 2 }[lang];
+  const tr = k => (T[k] ? (idx === 0 ? k : T[k][idx - 1]) : k);
+  window.I18N = { lang, t: tr };
+
+  const root = document.documentElement;
+  root.lang = lang;
+  root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('lang-code').textContent = lang.toUpperCase();
+  document.querySelectorAll('#lang-menu [data-lang]').forEach(b =>
+    b.setAttribute('aria-current', String(b.dataset.lang === lang)));
+
+  if (idx !== 0) {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: n => n.parentElement && !/^(SCRIPT|STYLE)$/.test(n.parentElement.tagName)
+        ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(n => {
+      const raw = n.nodeValue, k = raw.trim();
+      if (k && T[k]) n.nodeValue = raw.replace(k, T[k][idx - 1]);
+    });
+    ['aria-label', 'data-msg', 'title', 'placeholder'].forEach(a =>
+      document.querySelectorAll('[' + a + ']').forEach(el => {
+        const v = el.getAttribute(a);
+        if (T[v]) el.setAttribute(a, T[v][idx - 1]);
+      }));
+    // pre-filled WhatsApp greeting
+    document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
+      a.href = a.href.replace(/text=[^&]*/, 'text=' + encodeURIComponent(tr('Hello, I would like to book a consultation.')));
+    });
+  }
+  document.querySelector('.lang-btn').setAttribute('aria-label', tr('Change language'));
+
+  // Language menu
+  const btn = document.querySelector('.lang-btn'), menu = document.getElementById('lang-menu');
+  const close = () => { menu.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); };
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = menu.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('#lang')) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  menu.addEventListener('click', e => {
+    const b = e.target.closest('[data-lang]');
+    if (!b) return;
+    try { localStorage.setItem('lang', b.dataset.lang); } catch (err) {}
+    if (b.dataset.lang === lang) return close();
+    const u = new URL(location.href);
+    u.searchParams.set('lang', b.dataset.lang);
+    location.replace(u.toString());
+  });
+})();
+</script>
+
+<script>
+(() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const motion = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !reduce;
   if (motion) gsap.registerPlugin(ScrollTrigger);
 
   const names = ['home', 'about', 'services', 'contact'];
+  const t = window.I18N.t;
+  const rtl = document.documentElement.dir === 'rtl';
   const titles = {
-    home: 'Abir Outaleb | Clinical Psychologist',
-    about: 'About | Abir Outaleb',
-    services: 'Services | Abir Outaleb',
-    contact: 'Contact | Abir Outaleb'
+    home: t('Abir Outaleb | Clinical Psychologist'),
+    about: t('About | Abir Outaleb'),
+    services: t('Services | Abir Outaleb'),
+    contact: t('Contact | Abir Outaleb')
   };
   const nav = document.getElementById('nav');
   const toggle = document.querySelector('.nav-toggle');
@@ -585,7 +685,7 @@ p{max-width:60ch}
       if (!txt.dataset.split) {
         txt.dataset.split = '1';
         txt.innerHTML = txt.textContent.trim().split(/\s+/).map(w =>
-          `<span class="wd">${[...w].map(c => `<span class="ch">${c}</span>`).join('')}</span>`).join(' ');
+          `<span class="wd">${(rtl ? [w] : [...w]).map(c => `<span class="ch">${c}</span>`).join('')}</span>`).join(' ');
       }
       const chars = [...txt.querySelectorAll('.ch')];
       const chips = [...sec.querySelectorAll('.chip')];
@@ -783,7 +883,7 @@ p{max-width:60ch}
     btn.addEventListener('click', () => {
       const open = btn.closest('.card').classList.toggle('is-open');
       btn.setAttribute('aria-expanded', String(open));
-      btn.textContent = open ? 'Show less' : 'Read more';
+      btn.textContent = open ? t('Show less') : t('Read more');
     });
   });
 
@@ -802,16 +902,16 @@ p{max-width:60ch}
     const status = form.querySelector('.status');
     if (firstBad) {
       firstBad.focus();
-      status.textContent = 'Please check the highlighted fields.';
+      status.textContent = t('Please check the highlighted fields.');
       return;
     }
     // Send the message to the practice on WhatsApp, pre-filled from the form
     const v = n => (form.elements[n].value || '').trim();
     const lines = [
-      `Hello, my name is ${v('name')}.`,
-      `Email: ${v('email')}`,
-      v('phone') ? `Phone: ${v('phone')}` : false,
-      v('service') ? `Service: ${v('service')}` : false,
+      `${t('Hello, my name is')} ${v('name')}.`,
+      `${t('Email:')} ${v('email')}`,
+      v('phone') ? `${t('Phone:')} ${v('phone')}` : false,
+      v('service') ? `${t('Service:')} ${v('service')}` : false,
       '',
       v('message')
     ].filter(l => l !== false && l !== undefined);
@@ -819,7 +919,7 @@ p{max-width:60ch}
     const win = window.open(url, '_blank');
     if (win) win.opener = null; else location.href = url;
     form.reset();
-    status.textContent = 'Opening WhatsApp… just press send there to deliver your message.';
+    status.textContent = t('Opening WhatsApp… just press send there to deliver your message.');
   });
 
   document.getElementById('year').textContent = new Date().getFullYear();
@@ -866,4 +966,3 @@ p{max-width:60ch}
 </script>
 </body>
 </html>
-
